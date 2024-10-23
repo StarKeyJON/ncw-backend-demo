@@ -1,8 +1,9 @@
-import { FireblocksSDK } from "fireblocks-sdk";
 import { CryptoClient } from "coinmarketcap-js";
 
 export interface Clients {
-  signer: FireblocksSDK;
-  admin: FireblocksSDK;
+  apiKey: string;
+  secret: string;
+  uid: string;
+  passphrase: string;
   cmc: CryptoClient;
 }

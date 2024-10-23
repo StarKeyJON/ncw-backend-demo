@@ -3,7 +3,6 @@ import cors from "cors";
 import express, { Express, Request, Response } from "express";
 import bodyParser from "body-parser";
 import { AuthOptions, checkJwt } from "./middleware/jwt";
-import { createDeviceRoute } from "./routes/device.route";
 import { UserController } from "./controllers/user.controller";
 import { UserService } from "./services/user.service";
 import { Clients } from "./interfaces/Clients";
@@ -11,6 +10,7 @@ import { errorHandler } from "./middleware/errorHandler";
 import { createPassphraseRoute } from "./routes/passphrase.route";
 import { Server as SocketIOServer } from "socket.io";
 import { jwtVerify } from "jose";
+import { createTradeRoutes } from "./routes/trade.route";
 
 const logger = morgan("combined");
 
@@ -20,11 +20,9 @@ export const waitForTransactionTimeout = 10_000;
 function createApp(
   authOpts: AuthOptions,
   clients: Clients,
-  webhookPublicKey: string,
-  origin: string[],
 ): { app: express.Express; socketIO: SocketIOServer } {
   const validateUser = checkJwt(authOpts);
-  createDeviceRoute(clients);
+  const tradeRoute = createTradeRoutes(clients);
   const passphraseRoute = createPassphraseRoute();
   const userContoller = new UserController(new UserService());
 
@@ -45,6 +43,7 @@ function createApp(
 
   app.post("/api/login", validateUser, userContoller.login.bind(userContoller));
   app.use("/api/passphrase", validateUser, passphraseRoute);
+  app.use("/api/trade", validateUser, tradeRoute);
 
   app.use(errorHandler);
 
