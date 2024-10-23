@@ -1,11 +1,9 @@
 import dotenv from "dotenv";
 
 import { DataSourceOptions } from "typeorm";
-import { Message } from "./model/message";
 import { User } from "./model/user";
 import { Trade } from "./model/trade";
 import { Passphrase } from "./model/passphrase";
-import { MessageSubscriber } from "./subscribers/message.subscriber";
 dotenv.config();
 
 const opts: DataSourceOptions = {
@@ -17,8 +15,8 @@ const opts: DataSourceOptions = {
   database: process.env.DB_NAME,
   synchronize: false,
   logging: false,
-  entities: [Message, Passphrase, Trade, User],
-  subscribers: [MessageSubscriber],
+  entities: [Passphrase, Trade, User],
+  subscribers: [],
   migrations: ["./dist/migrations/*.js"],
 };
 
